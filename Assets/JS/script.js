@@ -22,7 +22,7 @@ var formSubmitHandler = function (event) {
   if (username) {
     getUserRepos(username);
 
-    repoContainerEl.textContent = '';
+    userFormEl.textContent = '';
     nameInputEl.value = '';
   } else {
     alert('Please enter a valid city');
@@ -32,22 +32,25 @@ var formSubmitHandler = function (event) {
 var getUserRepos = function (user) {
   var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + username + '&appid=301299b6ddb2048134ff89fe095920e8';
     
-    fetch(apiUrl)
-        .then(function (reponse) {
-            return response.json();
-        })
-        .then(function (data) {
-            console.log(data);
-            for (var i=0; i < data.length; i++) {
-                currentTempEl = data[i].main.temp;
-                tempMinEl = data[i].main.temp_min;
-                tempMaxEl = data[i].main.temp_max;
-                currentPressEl = data[i].main.pressure;
-                currentHumidEl = data[i].main.humidity;
-                currentCondEl = data[i].weather.main;
-                descriptionEl = data[i].weather.description;
-            }
-        })
+  fetch(apiUrl)
+  .then(function (reponse) {
+    return response.json();
+  })
+  .then(function (data) {
+    console.log(data);
+    for (var i=0; i < data.length; i++) {
+      currentTempEl = data[i].main.temp;
+      tempMinEl = data[i].main.temp_min;
+      tempMaxEl = data[i].main.temp_max;
+      currentPressEl = data[i].main.pressure;
+      currentHumidEl = data[i].main.humidity;
+      currentCondEl = data[i].weather.main;
+      descriptionEl = data[i].weather.description;
+    }
+  });
+
+
+      
 
 //   fetch(apiUrl)
 //     .then(function (response) {
@@ -103,4 +106,4 @@ var getUserRepos = function (user) {
 //   }
 // };
 
-userFormEl.addEventListener('submit', formSubmitHandler);
+userFormEl.addEventListener('submit', formSubmitHandler, getUserRepos);
