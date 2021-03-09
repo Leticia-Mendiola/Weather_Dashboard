@@ -9,10 +9,10 @@ var currentCondEl = document.querySelector('#current-cond');
 var descriptionEl = document.querySelector('#description')
 var repoSearchTerm = document.querySelector('#repo-search-term');
 
+var username = nameInputEl.value.trim();
+
 var formSubmitHandler = function (event) {
   event.preventDefault();
-
-  var username = nameInputEl.value.trim();
 
   if (username) {
     getUserRepos(username);
@@ -25,7 +25,7 @@ var formSubmitHandler = function (event) {
 };
 
 var getUserRepos = function (user) {
-  var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + user + '&appid=301299b6ddb2048134ff89fe095920e8';
+  var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + username + '&appid=301299b6ddb2048134ff89fe095920e8';
 
   fetch(apiUrl)
     .then(function (response) {
@@ -33,7 +33,7 @@ var getUserRepos = function (user) {
         console.log(response);
         response.json().then(function (data) {
           console.log(data);
-          displayRepos(data, user);
+          displayData();
         });
       } else {
         alert('Error: ' + response.statusText);
@@ -42,42 +42,43 @@ var getUserRepos = function (user) {
     .catch(function (error) {
       alert('Unable to connect to Open Weather API');
     });
+
 };
 
-var displayRepos = function (repos, searchTerm) {
-  if (repos.length === 0) {
-    repoContainerEl.textContent = 'No data found.';
-    return;
-  }
+// var displayRepos = function (repos, searchTerm) {
+//   if (repos.length === 0) {
+//     repoContainerEl.textContent = 'No data found.';
+//     return;
+//   }
 
-  repoSearchTerm.textContent = searchTerm;
+//   repoSearchTerm.textContent = searchTerm;
 
-  for (var i = 0; i < repos.length; i++) {
-    var repoName = repos[i].owner.login + '/' + repos[i].name;
+//   for (var i = 0; i < repos.length; i++) {
+//     var repoName = repos[i].owner.login + '/' + repos[i].name;
 
-    var repoEl = document.createElement('a');
-    repoEl.classList = 'list-item flex-row justify-space-between align-center';
-    repoEl.setAttribute('href', './single-repo.html?repo=' + repoName);
+//     var repoEl = document.createElement('a');
+//     repoEl.classList = 'list-item flex-row justify-space-between align-center';
+//     repoEl.setAttribute('href', './single-repo.html?repo=' + repoName);
 
-    var titleEl = document.createElement('span');
-    titleEl.textContent = repoName;
+//     var titleEl = document.createElement('span');
+//     titleEl.textContent = repoName;
 
-    repoEl.appendChild(titleEl);
+//     repoEl.appendChild(titleEl);
 
-    var statusEl = document.createElement('span');
-    statusEl.classList = 'flex-row align-center';
+//     var statusEl = document.createElement('span');
+//     statusEl.classList = 'flex-row align-center';
 
-    if (repos[i].open_issues_count > 0) {
-      statusEl.innerHTML =
-        "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + ' issue(s)';
-    } else {
-      statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
-    }
+//     if (repos[i].open_issues_count > 0) {
+//       statusEl.innerHTML =
+//         "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + ' issue(s)';
+//     } else {
+//       statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
+//     }
 
-    repoEl.appendChild(statusEl);
+//     repoEl.appendChild(statusEl);
 
-    repoContainerEl.appendChild(repoEl);
-  }
-};
+//     repoContainerEl.appendChild(repoEl);
+//   }
+// };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
