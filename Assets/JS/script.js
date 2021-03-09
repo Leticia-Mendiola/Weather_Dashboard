@@ -19,18 +19,18 @@ var formSubmitHandler = function (event) {
   }
 };
 
-var buttonClickHandler = function (event) {
-  var language = event.target.getAttribute('data-language');
+// var buttonClickHandler = function (event) {
+//   var language = event.target.getAttribute('data-language');
 
-  if (language) {
-    getFeaturedRepos(language);
+//   if (language) {
+//     getFeaturedRepos(language);
 
-    repoContainerEl.textContent = '';
-  }
-};
+//     repoContainerEl.textContent = '';
+//   }
+// };
 
 var getUserRepos = function (user) {
-  var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + user + '{city name},{state code}&appid=301299b6ddb2048134ff89fe095920e8';
+  var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + user + '&appid=301299b6ddb2048134ff89fe095920e8';
 
   fetch(apiUrl)
     .then(function (response) {
@@ -49,19 +49,19 @@ var getUserRepos = function (user) {
     });
 };
 
-var getFeaturedRepos = function (language) {
-  var apiUrl = 'https://api.github.com/search/repositories?q=' + language + '+is:featured&sort=help-wanted-issues';
+// var getFeaturedRepos = function (language) {
+//   var apiUrl = 'https://api.github.com/search/repositories?q=' + language + '+is:featured&sort=help-wanted-issues';
 
-  fetch(apiUrl).then(function (response) {
-    if (response.ok) {
-      response.json().then(function (data) {
-        displayRepos(data.items, language);
-      });
-    } else {
-      alert('Error: ' + response.statusText);
-    }
-  });
-};
+//   fetch(apiUrl).then(function (response) {
+//     if (response.ok) {
+//       response.json().then(function (data) {
+//         displayRepos(data.items, language);
+//       });
+//     } else {
+//       alert('Error: ' + response.statusText);
+//     }
+//   });
+// };
 
 var displayRepos = function (repos, searchTerm) {
   if (repos.length === 0) {
