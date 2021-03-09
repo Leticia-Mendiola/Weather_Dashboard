@@ -11,6 +11,11 @@ var repoSearchTerm = document.querySelector('#repo-search-term');
 
 var username = nameInputEl.value.trim();
 
+function displaycity() {
+    repoSearchTerm.texContent = username;
+}
+displaycity();
+
 var formSubmitHandler = function (event) {
   event.preventDefault();
 
