@@ -1,84 +1,103 @@
-var repoNameEl = document.querySelector('#repo-name');
-var issueContainerEl = document.querySelector('#issues-container');
-var limitWarningEl = document.querySelector('#limit-warning');
+var userFormEl = document.querySelector('#user-form');
+// var languageButtonsEl = document.querySelector('#language-buttons');
+var nameInputEl = document.querySelector('#username');
+var repoContainerEl = document.querySelector('#repos-container');
+var repoSearchTerm = document.querySelector('#repo-search-term');
 
-var getRepoName = function () {
-  // This is coming from the URL search bar in the browser. It is what comes after the `?`.
-  var queryString = document.location.search;
-  var repoName = queryString.split('=')[1];
+var formSubmitHandler = function (event) {
+  event.preventDefault();
 
-  if (repoName) {
-    repoNameEl.textContent = repoName;
+  var username = nameInputEl.value.trim();
 
-    getRepoIssues(repoName);
+  if (username) {
+    getUserRepos(username);
+
+    repoContainerEl.textContent = '';
+    nameInputEl.value = '';
   } else {
-    // This will run and return to the homepage if there was nothing in the URL query parameter.
-    document.location.replace('./index.html');
+    alert('Please enter a valid city');
   }
 };
 
-var getRepoIssues = function (repo) {
-  var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + repo + '&appid=301299b6ddb2048134ff89fe095920e8';
+var buttonClickHandler = function (event) {
+  var language = event.target.getAttribute('data-language');
+
+  if (language) {
+    getFeaturedRepos(language);
+
+    repoContainerEl.textContent = '';
+  }
+};
+
+var getUserRepos = function (user) {
+  var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + user + '{city name},{state code}&appid=301299b6ddb2048134ff89fe095920e8';
+
+  fetch(apiUrl)
+    .then(function (response) {
+      if (response.ok) {
+        console.log(response);
+        response.json().then(function (data) {
+          console.log(data);
+          displayRepos(data, user);
+        });
+      } else {
+        alert('Error: ' + response.statusText);
+      }
+    })
+    .catch(function (error) {
+      alert('Unable to connect to GitHub');
+    });
+};
+
+var getFeaturedRepos = function (language) {
+  var apiUrl = 'https://api.github.com/search/repositories?q=' + language + '+is:featured&sort=help-wanted-issues';
 
   fetch(apiUrl).then(function (response) {
     if (response.ok) {
       response.json().then(function (data) {
-        displayIssues(data);
-
-        // Since GitHub only returns 30 results at a time, we check to see if there's more than 30 by looking for a next page URL in the response headers.
-        if (response.headers.get('Link')) {
-          displayWarning(repo);
-        }
+        displayRepos(data.items, language);
       });
     } else {
-      document.location.replace('./index.html');
+      alert('Error: ' + response.statusText);
     }
   });
 };
 
-var displayIssues = function (issues) {
-  // This will check for strict equality. Using `!issues.length` works, but only because JavaScript considers `0` to be `falsy`.
-  if (issues.length === 0) {
-    issueContainerEl.textContent = 'This repo has no open issues!';
+var displayRepos = function (repos, searchTerm) {
+  if (repos.length === 0) {
+    repoContainerEl.textContent = 'No repositories found.';
     return;
   }
 
-  for (var i = 0; i < issues.length; i++) {
-    var issueEl = document.createElement('a');
-    issueEl.classList = 'list-item flex-row justify-space-between align-center';
-    issueEl.setAttribute('href', issues[i].html_url);
-    issueEl.setAttribute('target', '_blank');
+  repoSearchTerm.textContent = searchTerm;
+
+  for (var i = 0; i < repos.length; i++) {
+    var repoName = repos[i].owner.login + '/' + repos[i].name;
+
+    var repoEl = document.createElement('a');
+    repoEl.classList = 'list-item flex-row justify-space-between align-center';
+    repoEl.setAttribute('href', './single-repo.html?repo=' + repoName);
 
     var titleEl = document.createElement('span');
-    titleEl.textContent = issues[i].title;
-    issueEl.appendChild(titleEl);
+    titleEl.textContent = repoName;
 
-    var typeEl = document.createElement('span');
+    repoEl.appendChild(titleEl);
 
-    // If there's already a pull request open, it's a good idea we focus on other open issues that no one has worked on.
-    if (issues[i].pull_request) {
-      typeEl.textContent = '(Pull request)';
+    var statusEl = document.createElement('span');
+    statusEl.classList = 'flex-row align-center';
+
+    if (repos[i].open_issues_count > 0) {
+      statusEl.innerHTML =
+        "<i class='fas fa-times status-icon icon-danger'></i>" + repos[i].open_issues_count + ' issue(s)';
     } else {
-      typeEl.textContent = '(Issue)';
+      statusEl.innerHTML = "<i class='fas fa-check-square status-icon icon-success'></i>";
     }
 
-    issueEl.appendChild(typeEl);
+    repoEl.appendChild(statusEl);
 
-    issueContainerEl.appendChild(issueEl);
+    repoContainerEl.appendChild(repoEl);
   }
 };
 
-// When there are more issues than what GitHub has returned, we let the user know by printing a message with a link to the page.
-var displayWarning = function (repo) {
-  limitWarningEl.textContent = 'To see more than 30 issues, visit ';
-
-  var linkEl = document.createElement('a');
-  linkEl.textContent = 'GitHub.com';
-  linkEl.setAttribute('href', 'https://github.com/' + repo + '/issues');
-  linkEl.setAttribute('target', '_blank');
-
-  // This will appear on the bottom of the page.
-  limitWarningEl.appendChild(linkEl);
-};
-
-getRepoName();
+userFormEl.addEventListener('submit', formSubmitHandler);
+languageButtonsEl.addEventListener('click', buttonClickHandler);
