@@ -18,7 +18,7 @@ var getRepoName = function () {
 };
 
 var getRepoIssues = function (repo) {
-  var apiUrl = 'https://api.github.com/repos/' + repo + '/issues?direction=asc';
+  var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + repo + '&appid=301299b6ddb2048134ff89fe095920e8';
 
   fetch(apiUrl).then(function (response) {
     if (response.ok) {
