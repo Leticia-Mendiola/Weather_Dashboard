@@ -45,7 +45,7 @@ var getUserRepos = function (user) {
       }
     })
     .catch(function (error) {
-      alert('Unable to connect to GitHub');
+      alert('Unable to connect to Open Weather API');
     });
 };
 
@@ -65,7 +65,7 @@ var getUserRepos = function (user) {
 
 var displayRepos = function (repos, searchTerm) {
   if (repos.length === 0) {
-    repoContainerEl.textContent = 'No repositories found.';
+    repoContainerEl.textContent = 'No data found.';
     return;
   }
 
@@ -100,4 +100,4 @@ var displayRepos = function (repos, searchTerm) {
 };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
-languageButtonsEl.addEventListener('click', buttonClickHandler);
+// languageButtonsEl.addEventListener('click', buttonClickHandler);
