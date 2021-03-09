@@ -1,7 +1,12 @@
 var userFormEl = document.querySelector('#user-form');
-// var languageButtonsEl = document.querySelector('#language-buttons');
 var nameInputEl = document.querySelector('#username');
-var repoContainerEl = document.querySelector('#repos-container');
+var currentTempEl = document.querySelector('#current-temp');
+var tempMinEl = document.querySelector('#temp-min');
+var tempMaxEl = document.querySelector('#temp-max');
+var currentPressEl = document.querySelector('#current-press');
+var currentHumidEl = document.querySelector('#current-humid');
+var currentCondEl = document.querySelector('#current-cond');
+var descriptionEl = document.querySelector('#description')
 var repoSearchTerm = document.querySelector('#repo-search-term');
 
 var formSubmitHandler = function (event) {
@@ -18,16 +23,6 @@ var formSubmitHandler = function (event) {
     alert('Please enter a valid city');
   }
 };
-
-// var buttonClickHandler = function (event) {
-//   var language = event.target.getAttribute('data-language');
-
-//   if (language) {
-//     getFeaturedRepos(language);
-
-//     repoContainerEl.textContent = '';
-//   }
-// };
 
 var getUserRepos = function (user) {
   var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + user + '&appid=301299b6ddb2048134ff89fe095920e8';
@@ -48,20 +43,6 @@ var getUserRepos = function (user) {
       alert('Unable to connect to Open Weather API');
     });
 };
-
-// var getFeaturedRepos = function (language) {
-//   var apiUrl = 'https://api.github.com/search/repositories?q=' + language + '+is:featured&sort=help-wanted-issues';
-
-//   fetch(apiUrl).then(function (response) {
-//     if (response.ok) {
-//       response.json().then(function (data) {
-//         displayRepos(data.items, language);
-//       });
-//     } else {
-//       alert('Error: ' + response.statusText);
-//     }
-//   });
-// };
 
 var displayRepos = function (repos, searchTerm) {
   if (repos.length === 0) {
@@ -100,4 +81,3 @@ var displayRepos = function (repos, searchTerm) {
 };
 
 userFormEl.addEventListener('submit', formSubmitHandler);
-// languageButtonsEl.addEventListener('click', buttonClickHandler);
