@@ -30,7 +30,7 @@ var formSubmitHandler = function (event) {
 };
 
 var getUserRepos = function (user) {
-  var apiUrl = 'api.openweathermap.org/data/2.5/weather?q=' + username + '&appid=301299b6ddb2048134ff89fe095920e8';
+  var apiUrl = 'https://api.openweathermap.org/data/2.5/weather?q=' + username + '&appid=301299b6ddb2048134ff89fe095920e8';
     
   fetch(apiUrl)
   .then(function (reponse) {
